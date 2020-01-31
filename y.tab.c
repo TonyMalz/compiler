@@ -93,16 +93,20 @@
 	#include <string.h>
 	#include <ctype.h> 
 	#define YYERROR_VERBOSE 1
+	#define MAX_SYMBOLS 100
 
 	extern FILE *yyin;
 
 	int yylex(void);
 	int yyerror(const char *s);
 	
-	int symbols[52];
-	int symbolVal(char symbol);
-	void updateSymTable(char symbol, int val);
-	
+	char* symbolNames[MAX_SYMBOLS];
+	int  symbolValues[MAX_SYMBOLS];
+
+	void initSymTable();
+	int symbolVal(char* id);
+	void updateSymTable(char* symbol, int val);
+
 	int nErrors = 0;
 
 
@@ -126,10 +130,10 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 23 "yacc_template.y"
-{ int num; char id; }
+#line 27 "yacc_template.y"
+{ int num; char* id; }
 /* Line 193 of yacc.c.  */
-#line 133 "y.tab.c"
+#line 137 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -154,7 +158,7 @@ typedef struct YYLTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 158 "y.tab.c"
+#line 162 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -444,8 +448,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    42,    42,    43,    46,    47,    48,    49,    52,    53,
-      56,    57,    58,    59,    60,    63,    64
+       0,    46,    46,    47,    50,    51,    52,    53,    56,    57,
+      60,    61,    62,    63,    64,    67,    68
 };
 #endif
 
@@ -1384,63 +1388,63 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 42 "yacc_template.y"
-    { printf("Expression result = %d\n", (yyvsp[(4) - (4)].num)); }
+#line 46 "yacc_template.y"
+    { if(nErrors==0) printf("Expression result = %d\n", (yyvsp[(4) - (4)].num)); }
     break;
 
   case 3:
-#line 43 "yacc_template.y"
-    { (yyval.num) = (yyvsp[(4) - (4)].num); printf("Expression result = %d\n", (yyvsp[(4) - (4)].num)); }
+#line 47 "yacc_template.y"
+    { ; }
     break;
 
   case 8:
-#line 52 "yacc_template.y"
+#line 56 "yacc_template.y"
     { (yyval.id) = (yyvsp[(1) - (3)].id); updateSymTable((yyvsp[(1) - (3)].id),(yyvsp[(3) - (3)].num)); }
     break;
 
   case 9:
-#line 53 "yacc_template.y"
+#line 57 "yacc_template.y"
     { (yyval.id) = (yyvsp[(1) - (2)].id); }
     break;
 
   case 10:
-#line 56 "yacc_template.y"
+#line 60 "yacc_template.y"
     { (yyval.num) = (yyvsp[(1) - (1)].num); }
     break;
 
   case 11:
-#line 57 "yacc_template.y"
+#line 61 "yacc_template.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) + (yyvsp[(3) - (3)].num); }
     break;
 
   case 12:
-#line 58 "yacc_template.y"
+#line 62 "yacc_template.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) - (yyvsp[(3) - (3)].num); }
     break;
 
   case 13:
-#line 59 "yacc_template.y"
+#line 63 "yacc_template.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) * (yyvsp[(3) - (3)].num); }
     break;
 
   case 14:
-#line 60 "yacc_template.y"
+#line 64 "yacc_template.y"
     { (yyval.num) = (yyvsp[(2) - (3)].num); }
     break;
 
   case 15:
-#line 63 "yacc_template.y"
+#line 67 "yacc_template.y"
     { (yyval.num) = (yyvsp[(1) - (1)].num); }
     break;
 
   case 16:
-#line 64 "yacc_template.y"
+#line 68 "yacc_template.y"
     { (yyval.num) = symbolVal((yyvsp[(1) - (1)].id)); }
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1444 "y.tab.c"
+#line 1448 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1660,25 +1664,41 @@ yyreturn:
 }
 
 
-#line 65 "yacc_template.y"
+#line 69 "yacc_template.y"
 
 
-int computeSymbolIndex(char token){
+void initSymTable(){
+	for (int i=0; i<MAX_SYMBOLS; i++){
+		symbolNames[i] = NULL;
+		symbolValues[i] = 0;
+	}
+}
+
+int computeSymbolIndex(char* token){
 	int idx = -1;
-	if(islower(token)){
-		idx = token - 'a' + 26;
-	} else if (isupper(token)){
-		idx = token - 'A';
+	for (int i=0; i<MAX_SYMBOLS; ++i){
+		if (symbolNames[i] == NULL) {
+			idx = i;
+			// add token to symbol table
+			symbolNames[i] = malloc(strlen(token)+1);
+			strcpy(symbolNames[i],token);
+			break;
+		}
+		// if strings are equal
+		if (strcmp(symbolNames[i],token) == 0){
+			idx = i;
+			break;
+		}
 	}
 	return idx;
 }
 
-int symbolVal(char symbol){
-	return symbols[computeSymbolIndex(symbol)];
+int symbolVal(char* symbol){
+	return symbolValues[computeSymbolIndex(symbol)];
 }
 
-void updateSymTable(char symbol, int val){
-	symbols[computeSymbolIndex(symbol)] = val;
+void updateSymTable(char* symbol, int val){
+	symbolValues[computeSymbolIndex(symbol)] = val;
 }
 
 // Main function to parse from a file, specified as a parameter
@@ -1691,9 +1711,7 @@ int main (int argc, char *argv[]) {
 		printf("I cannot open %s!\n", argv[1]);
 		return -1;
 	}
-	for (int i=0; i<52; i++){
-		symbols[i]=0;
-	}
+	initSymTable();
 	// Set Lex to read from the file, instead of STDIN
 	yyin = myfile;
 
@@ -1707,7 +1725,7 @@ int main (int argc, char *argv[]) {
 // Error handling function
 int yyerror(const char *s) {
 	++nErrors;
-	fprintf(stderr, "\nError %d (line %d, characters %d-%d):\n %s\n", nErrors, yylloc.first_line, yylloc.first_column, yylloc.last_column, s);
+	fprintf(stderr, "Error %d (line %d, characters %d-%d):\n %s\n", nErrors, yylloc.first_line, yylloc.first_column, yylloc.last_column, s);
 	
 	return 0;
 }

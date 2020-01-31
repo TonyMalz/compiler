@@ -19,7 +19,7 @@
 "and"		{ calcTokenLocation(); return AND; }
 "in"		{ calcTokenLocation(); return IN; }
 [0-9]+		{ calcTokenLocation(); yylval.num = atoi(yytext); return NUMBER; }	
-[a-zA-Z] 	{ calcTokenLocation(); yylval.id = yytext[0]; return ID; }
+[a-zA-Z]+ 	{ calcTokenLocation(); yylval.id = malloc(yyleng); strcpy(yylval.id, yytext); return ID; }
 [ \t]	    { ++pos; }
 \n          { pos=1; ++line; }
 [-+=*()]	{ calcTokenLocation(); return yytext[0]; }
@@ -34,10 +34,10 @@ void calcTokenLocation(){
 }
 
 void printError(){
-	char msg[] = "lexical error, unrecognized input string `%s`";
+	char* msg = "lexical error, unrecognized input string `%s`\n";
 	char lenMsg = strlen(msg);
 	char str[lenMsg+yyleng];
-	
-	sprintf(str,"lexical error, unrecognized input string `%s`", yytext);
+
+	sprintf(str, msg, yytext);
 	yyerror(str);
 }

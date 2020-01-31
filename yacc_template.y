@@ -4,23 +4,27 @@
 	#include <string.h>
 	#include <ctype.h> 
 	#define YYERROR_VERBOSE 1
+	#define MAX_SYMBOLS 100
 
 	extern FILE *yyin;
 
 	int yylex(void);
 	int yyerror(const char *s);
 	
-	int symbols[52];
-	int symbolVal(char symbol);
-	void updateSymTable(char symbol, int val);
-	
+	char* symbolNames[MAX_SYMBOLS];
+	int  symbolValues[MAX_SYMBOLS];
+
+	void initSymTable();
+	int symbolVal(char* id);
+	void updateSymTable(char* symbol, int val);
+
 	int nErrors = 0;
 %}
 
 %locations
 
 /* Token and type definitions */
-%union { int num; char id; }
+%union { int num; char* id; }
 
 %token LET   "keyword `let`"
 %token AND   "keyword `and`"
@@ -39,8 +43,8 @@
 %left '*'
 
 %%
-stmt : LET assignlist IN exp { printf("Expression result = %d\n", $4); }
-	 | LET error IN exp 	 { $$ = $4; printf("Expression result = %d\n", $4); }
+stmt : LET assignlist IN exp { if(nErrors==0) printf("Expression result = %d\n", $4); }
+	 | LET error IN exp 	 { ; }
 	 ;
 
 assignlist : assign
@@ -64,22 +68,38 @@ term : NUMBER	{ $$ = $1; }
 	 | ID  		{ $$ = symbolVal($1); }
 %%
 
-int computeSymbolIndex(char token){
+void initSymTable(){
+	for (int i=0; i<MAX_SYMBOLS; i++){
+		symbolNames[i] = NULL;
+		symbolValues[i] = 0;
+	}
+}
+
+int computeSymbolIndex(char* token){
 	int idx = -1;
-	if(islower(token)){
-		idx = token - 'a' + 26;
-	} else if (isupper(token)){
-		idx = token - 'A';
+	for (int i=0; i<MAX_SYMBOLS; ++i){
+		if (symbolNames[i] == NULL) {
+			idx = i;
+			// add token to symbol table
+			symbolNames[i] = malloc(strlen(token)+1);
+			strcpy(symbolNames[i],token);
+			break;
+		}
+		// if strings are equal
+		if (strcmp(symbolNames[i],token) == 0){
+			idx = i;
+			break;
+		}
 	}
 	return idx;
 }
 
-int symbolVal(char symbol){
-	return symbols[computeSymbolIndex(symbol)];
+int symbolVal(char* symbol){
+	return symbolValues[computeSymbolIndex(symbol)];
 }
 
-void updateSymTable(char symbol, int val){
-	symbols[computeSymbolIndex(symbol)] = val;
+void updateSymTable(char* symbol, int val){
+	symbolValues[computeSymbolIndex(symbol)] = val;
 }
 
 // Main function to parse from a file, specified as a parameter
@@ -92,9 +112,7 @@ int main (int argc, char *argv[]) {
 		printf("I cannot open %s!\n", argv[1]);
 		return -1;
 	}
-	for (int i=0; i<52; i++){
-		symbols[i]=0;
-	}
+	initSymTable();
 	// Set Lex to read from the file, instead of STDIN
 	yyin = myfile;
 
@@ -108,7 +126,7 @@ int main (int argc, char *argv[]) {
 // Error handling function
 int yyerror(const char *s) {
 	++nErrors;
-	fprintf(stderr, "\nError %d (line %d, characters %d-%d):\n %s\n", nErrors, yylloc.first_line, yylloc.first_column, yylloc.last_column, s);
+	fprintf(stderr, "Error %d (line %d, characters %d-%d):\n %s\n", nErrors, yylloc.first_line, yylloc.first_column, yylloc.last_column, s);
 	
 	return 0;
 }

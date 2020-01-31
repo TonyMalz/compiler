@@ -372,10 +372,10 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[20] =
+static yyconst flex_int16_t yy_accept[21] =
     {   0,
         0,    0,   11,    9,    6,    7,    8,    4,    5,    5,
-        5,    5,    4,    0,    3,    0,    2,    1,    0
+        5,    5,    4,    5,    5,    3,    5,    2,    1,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -412,36 +412,38 @@ static yyconst flex_int32_t yy_ec[256] =
 
 static yyconst flex_int32_t yy_meta[14] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1
+        1,    1,    1,    1,    1,    2,    2,    2,    2,    2,
+        2,    2,    2
     } ;
 
-static yyconst flex_int16_t yy_base[20] =
+static yyconst flex_int16_t yy_base[22] =
     {   0,
-        0,    0,   21,   22,   22,   22,   22,   15,   22,    7,
-        6,    8,   11,    7,   22,    1,   22,   22,   22
+        0,    0,   22,   23,   23,   23,   23,   16,    0,    8,
+        7,    9,   12,    0,    8,    0,    2,    0,    0,   23,
+       12
     } ;
 
-static yyconst flex_int16_t yy_def[20] =
+static yyconst flex_int16_t yy_def[22] =
     {   0,
-       19,    1,   19,   19,   19,   19,   19,   19,   19,   19,
-       19,   19,   19,   19,   19,   19,   19,   19,    0
+       20,    1,   20,   20,   20,   20,   20,   20,   21,   21,
+       21,   21,   20,   21,   21,   21,   21,   21,   21,    0,
+       20
     } ;
 
-static yyconst flex_int16_t yy_nxt[36] =
+static yyconst flex_int16_t yy_nxt[37] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,    9,    9,   11,
-       12,    9,    9,   18,   17,   13,   16,   15,   14,   13,
-       19,    3,   19,   19,   19,   19,   19,   19,   19,   19,
-       19,   19,   19,   19,   19
+       12,    9,    9,   14,   19,   18,   13,   17,   16,   15,
+       13,   20,    3,   20,   20,   20,   20,   20,   20,   20,
+       20,   20,   20,   20,   20,   20
     } ;
 
-static yyconst flex_int16_t yy_chk[36] =
+static yyconst flex_int16_t yy_chk[37] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,   16,   14,   13,   12,   11,   10,    8,
-        3,   19,   19,   19,   19,   19,   19,   19,   19,   19,
-       19,   19,   19,   19,   19
+        1,    1,    1,   21,   17,   15,   13,   12,   11,   10,
+        8,    3,   20,   20,   20,   20,   20,   20,   20,   20,
+       20,   20,   20,   20,   20,   20
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -471,7 +473,7 @@ char *yytext;
 	int line = 1;
 	void calcTokenLocation();
 	void printError();
-#line 475 "lex.yy.c"
+#line 477 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -655,7 +657,7 @@ YY_DECL
     
 #line 17 "lex_template.lex"
 
-#line 659 "lex.yy.c"
+#line 661 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -708,13 +710,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 20 )
+				if ( yy_current_state >= 21 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 22 );
+		while ( yy_base[yy_current_state] != 23 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -761,7 +763,7 @@ YY_RULE_SETUP
 case 5:
 YY_RULE_SETUP
 #line 22 "lex_template.lex"
-{ calcTokenLocation(); yylval.id = yytext[0]; return ID; }
+{ calcTokenLocation(); yylval.id = malloc(yyleng); strcpy(yylval.id, yytext); return ID; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
@@ -789,7 +791,7 @@ YY_RULE_SETUP
 #line 27 "lex_template.lex"
 ECHO;
 	YY_BREAK
-#line 793 "lex.yy.c"
+#line 795 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1081,7 +1083,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 20 )
+			if ( yy_current_state >= 21 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1109,11 +1111,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 20 )
+		if ( yy_current_state >= 21 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 19);
+	yy_is_jam = (yy_current_state == 20);
 
 	return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1798,10 +1800,10 @@ void calcTokenLocation(){
 }
 
 void printError(){
-	char msg[] = "lexical error, unrecognized input string `%s`";
+	char* msg = "lexical error, unrecognized input string `%s`\n";
 	char lenMsg = strlen(msg);
 	char str[lenMsg+yyleng];
-	
-	sprintf(str,"lexical error, unrecognized input string `%s`", yytext);
+
+	sprintf(str, msg, yytext);
 	yyerror(str);
 }
