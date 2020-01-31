@@ -106,6 +106,9 @@
 	void initSymTable();
 	int symbolVal(char* id);
 	void updateSymTable(char* symbol, int val);
+	int symbolWasInitialised();
+
+	void errorInitID(char* id);
 
 	int nErrors = 0;
 
@@ -130,10 +133,10 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 27 "yacc_template.y"
+#line 30 "yacc_template.y"
 { int num; char* id; }
 /* Line 193 of yacc.c.  */
-#line 137 "y.tab.c"
+#line 140 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -158,7 +161,7 @@ typedef struct YYLTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 162 "y.tab.c"
+#line 165 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -448,8 +451,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    46,    46,    47,    50,    51,    52,    53,    56,    57,
-      60,    61,    62,    63,    64,    67,    68
+       0,    49,    49,    50,    53,    54,    55,    56,    59,    60,
+      63,    64,    65,    66,    67,    70,    71
 };
 #endif
 
@@ -1388,63 +1391,63 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 46 "yacc_template.y"
+#line 49 "yacc_template.y"
     { if(nErrors==0) printf("Expression result = %d\n", (yyvsp[(4) - (4)].num)); }
     break;
 
   case 3:
-#line 47 "yacc_template.y"
+#line 50 "yacc_template.y"
     { ; }
     break;
 
   case 8:
-#line 56 "yacc_template.y"
+#line 59 "yacc_template.y"
     { (yyval.id) = (yyvsp[(1) - (3)].id); updateSymTable((yyvsp[(1) - (3)].id),(yyvsp[(3) - (3)].num)); }
     break;
 
   case 9:
-#line 57 "yacc_template.y"
+#line 60 "yacc_template.y"
     { (yyval.id) = (yyvsp[(1) - (2)].id); }
     break;
 
   case 10:
-#line 60 "yacc_template.y"
+#line 63 "yacc_template.y"
     { (yyval.num) = (yyvsp[(1) - (1)].num); }
     break;
 
   case 11:
-#line 61 "yacc_template.y"
+#line 64 "yacc_template.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) + (yyvsp[(3) - (3)].num); }
     break;
 
   case 12:
-#line 62 "yacc_template.y"
+#line 65 "yacc_template.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) - (yyvsp[(3) - (3)].num); }
     break;
 
   case 13:
-#line 63 "yacc_template.y"
+#line 66 "yacc_template.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) * (yyvsp[(3) - (3)].num); }
     break;
 
   case 14:
-#line 64 "yacc_template.y"
+#line 67 "yacc_template.y"
     { (yyval.num) = (yyvsp[(2) - (3)].num); }
     break;
 
   case 15:
-#line 67 "yacc_template.y"
+#line 70 "yacc_template.y"
     { (yyval.num) = (yyvsp[(1) - (1)].num); }
     break;
 
   case 16:
-#line 68 "yacc_template.y"
-    { (yyval.num) = symbolVal((yyvsp[(1) - (1)].id)); }
+#line 71 "yacc_template.y"
+    { (symbolWasInitialised((yyvsp[(1) - (1)].id))) ? (yyval.num) = symbolVal((yyvsp[(1) - (1)].id)) : errorInitID((yyvsp[(1) - (1)].id)) ; }
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1448 "y.tab.c"
+#line 1451 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1664,7 +1667,7 @@ yyreturn:
 }
 
 
-#line 69 "yacc_template.y"
+#line 72 "yacc_template.y"
 
 
 void initSymTable(){
@@ -1672,6 +1675,21 @@ void initSymTable(){
 		symbolNames[i] = NULL;
 		symbolValues[i] = 0;
 	}
+}
+
+int symbolWasInitialised(char* symbol){
+	int found = 0;
+	for (int i=0; i<MAX_SYMBOLS; ++i){
+		if (symbolNames[i] == NULL) {
+			break;
+		}
+		// if strings are equal => symbol was initialised before
+		if (strcmp(symbolNames[i],symbol) == 0){
+			found = 1;
+			break;
+		}
+	}
+	return found;
 }
 
 int computeSymbolIndex(char* token){
@@ -1722,10 +1740,16 @@ int main (int argc, char *argv[]) {
 	return parseResult;
 }
 
+void errorInitID(char* token){
+	char* msg = "syntax error, identifier `%s` is used before it was initialised";
+	char str[strlen(msg)+strlen(token)+2];
+	sprintf(str, msg, token);
+	yyerror(str);
+}
 // Error handling function
 int yyerror(const char *s) {
 	++nErrors;
-	fprintf(stderr, "Error %d (line %d, characters %d-%d):\n %s\n", nErrors, yylloc.first_line, yylloc.first_column, yylloc.last_column, s);
+	fprintf(stderr, "Error %d (line %d, characters %d-%d):\n %s\n\n", nErrors, yylloc.first_line, yylloc.first_column, yylloc.last_column, s);
 	
 	return 0;
 }

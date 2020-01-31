@@ -17,6 +17,9 @@
 	void initSymTable();
 	int symbolVal(char* id);
 	void updateSymTable(char* symbol, int val);
+	int symbolWasInitialised();
+
+	void errorInitID(char* id);
 
 	int nErrors = 0;
 %}
@@ -65,7 +68,7 @@ exp : term		    { $$ = $1; }
 	;
 
 term : NUMBER	{ $$ = $1; }
-	 | ID  		{ $$ = symbolVal($1); }
+	 | ID  		{ (symbolWasInitialised($1)) ? $$ = symbolVal($1) : errorInitID($1) ; }
 %%
 
 void initSymTable(){
@@ -73,6 +76,21 @@ void initSymTable(){
 		symbolNames[i] = NULL;
 		symbolValues[i] = 0;
 	}
+}
+
+int symbolWasInitialised(char* symbol){
+	int found = 0;
+	for (int i=0; i<MAX_SYMBOLS; ++i){
+		if (symbolNames[i] == NULL) {
+			break;
+		}
+		// if strings are equal => symbol was initialised before
+		if (strcmp(symbolNames[i],symbol) == 0){
+			found = 1;
+			break;
+		}
+	}
+	return found;
 }
 
 int computeSymbolIndex(char* token){
@@ -123,10 +141,16 @@ int main (int argc, char *argv[]) {
 	return parseResult;
 }
 
+void errorInitID(char* token){
+	char* msg = "syntax error, identifier `%s` is used before it was initialised";
+	char str[strlen(msg)+strlen(token)+2];
+	sprintf(str, msg, token);
+	yyerror(str);
+}
 // Error handling function
 int yyerror(const char *s) {
 	++nErrors;
-	fprintf(stderr, "Error %d (line %d, characters %d-%d):\n %s\n", nErrors, yylloc.first_line, yylloc.first_column, yylloc.last_column, s);
+	fprintf(stderr, "Error %d (line %d, characters %d-%d):\n %s\n\n", nErrors, yylloc.first_line, yylloc.first_column, yylloc.last_column, s);
 	
 	return 0;
 }

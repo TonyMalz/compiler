@@ -1,1 +1,1 @@
-let Aber=1 and B=Aber and Let=3 in Aber+B*10*10 + Let
+let a=2 and b=2 and c = a+b in c

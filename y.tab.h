@@ -60,7 +60,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 27 "yacc_template.y"
+#line 30 "yacc_template.y"
 { int num; char* id; }
 /* Line 1529 of yacc.c.  */
 #line 67 "y.tab.h"
