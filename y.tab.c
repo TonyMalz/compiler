@@ -95,9 +95,6 @@
 	#define YYERROR_VERBOSE 1
 
 	extern FILE *yyin;
-	extern int yylineno, yychar;
-	extern char* yytext;
-	
 
 	int yylex(void);
 	int yyerror(const char *s);
@@ -105,6 +102,7 @@
 	int symbols[52];
 	int symbolVal(char symbol);
 	void updateSymTable(char symbol, int val);
+	
 	int nErrors = 0;
 
 
@@ -128,10 +126,10 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 25 "yacc_template.y"
-{int num; char id;}
+#line 23 "yacc_template.y"
+{ int num; char id; }
 /* Line 193 of yacc.c.  */
-#line 135 "y.tab.c"
+#line 133 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -156,7 +154,7 @@ typedef struct YYLTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 160 "y.tab.c"
+#line 158 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -446,8 +444,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    43,    43,    44,    47,    48,    49,    50,    53,    54,
-      57,    58,    59,    60,    61,    64,    65
+       0,    42,    42,    43,    46,    47,    48,    49,    52,    53,
+      56,    57,    58,    59,    60,    63,    64
 };
 #endif
 
@@ -1386,63 +1384,63 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 43 "yacc_template.y"
-    {printf("Expression result = %d\n", (yyvsp[(4) - (4)].num));}
+#line 42 "yacc_template.y"
+    { printf("Expression result = %d\n", (yyvsp[(4) - (4)].num)); }
     break;
 
   case 3:
-#line 44 "yacc_template.y"
-    {(yyval.num) = (yyvsp[(4) - (4)].num); printf("Expression result = %d\n", (yyvsp[(4) - (4)].num));}
+#line 43 "yacc_template.y"
+    { (yyval.num) = (yyvsp[(4) - (4)].num); printf("Expression result = %d\n", (yyvsp[(4) - (4)].num)); }
     break;
 
   case 8:
-#line 53 "yacc_template.y"
-    {(yyval.id) = (yyvsp[(1) - (3)].id); updateSymTable((yyvsp[(1) - (3)].id),(yyvsp[(3) - (3)].num));}
+#line 52 "yacc_template.y"
+    { (yyval.id) = (yyvsp[(1) - (3)].id); updateSymTable((yyvsp[(1) - (3)].id),(yyvsp[(3) - (3)].num)); }
     break;
 
   case 9:
-#line 54 "yacc_template.y"
-    {(yyval.id) = (yyvsp[(1) - (2)].id);}
+#line 53 "yacc_template.y"
+    { (yyval.id) = (yyvsp[(1) - (2)].id); }
     break;
 
   case 10:
-#line 57 "yacc_template.y"
-    { (yyval.num) = (yyvsp[(1) - (1)].num);}
+#line 56 "yacc_template.y"
+    { (yyval.num) = (yyvsp[(1) - (1)].num); }
     break;
 
   case 11:
-#line 58 "yacc_template.y"
-    { (yyval.num) = (yyvsp[(1) - (3)].num) + (yyvsp[(3) - (3)].num);}
+#line 57 "yacc_template.y"
+    { (yyval.num) = (yyvsp[(1) - (3)].num) + (yyvsp[(3) - (3)].num); }
     break;
 
   case 12:
-#line 59 "yacc_template.y"
-    { (yyval.num) = (yyvsp[(1) - (3)].num) - (yyvsp[(3) - (3)].num);}
+#line 58 "yacc_template.y"
+    { (yyval.num) = (yyvsp[(1) - (3)].num) - (yyvsp[(3) - (3)].num); }
     break;
 
   case 13:
-#line 60 "yacc_template.y"
-    { (yyval.num) = (yyvsp[(1) - (3)].num) * (yyvsp[(3) - (3)].num);}
+#line 59 "yacc_template.y"
+    { (yyval.num) = (yyvsp[(1) - (3)].num) * (yyvsp[(3) - (3)].num); }
     break;
 
   case 14:
-#line 61 "yacc_template.y"
-    { (yyval.num) = (yyvsp[(2) - (3)].num);}
+#line 60 "yacc_template.y"
+    { (yyval.num) = (yyvsp[(2) - (3)].num); }
     break;
 
   case 15:
-#line 64 "yacc_template.y"
-    {(yyval.num) = (yyvsp[(1) - (1)].num);}
+#line 63 "yacc_template.y"
+    { (yyval.num) = (yyvsp[(1) - (1)].num); }
     break;
 
   case 16:
-#line 65 "yacc_template.y"
-    {(yyval.num) = symbolVal((yyvsp[(1) - (1)].id));}
+#line 64 "yacc_template.y"
+    { (yyval.num) = symbolVal((yyvsp[(1) - (1)].id)); }
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1446 "y.tab.c"
+#line 1444 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1662,7 +1660,7 @@ yyreturn:
 }
 
 
-#line 66 "yacc_template.y"
+#line 65 "yacc_template.y"
 
 
 int computeSymbolIndex(char token){
@@ -1709,7 +1707,7 @@ int main (int argc, char *argv[]) {
 // Error handling function
 int yyerror(const char *s) {
 	++nErrors;
-	fprintf(stderr, "Error %d (line %d, characters %d-%d):\n %s\n\n",nErrors,yylineno, yylloc.first_column, yylloc.last_column,s);
+	fprintf(stderr, "\nError %d (line %d, characters %d-%d):\n %s\n", nErrors, yylloc.first_line, yylloc.first_column, yylloc.last_column, s);
 	
 	return 0;
 }

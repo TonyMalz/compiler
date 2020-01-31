@@ -6,9 +6,6 @@
 	#define YYERROR_VERBOSE 1
 
 	extern FILE *yyin;
-	extern int yylineno, yychar;
-	extern char* yytext;
-	
 
 	int yylex(void);
 	int yyerror(const char *s);
@@ -16,32 +13,34 @@
 	int symbols[52];
 	int symbolVal(char symbol);
 	void updateSymTable(char symbol, int val);
+	
 	int nErrors = 0;
 %}
 
 %locations
 
+/* Token and type definitions */
+%union { int num; char id; }
 
-%union {int num; char id;}
-%token LET "keyword `let`"
-%token AND "keyword `and`"
-%token IN  "keyword `in`"
+%token LET   "keyword `let`"
+%token AND   "keyword `and`"
+%token IN    "keyword `in`"
 %token END 0 "end of file"
 
 %token <num> NUMBER "number"
-%token <id> ID "identifier"
+%token <id>  ID "identifier"
 
+/* Types of non-terminals */
 %type <num> stmt exp term
-%type <id> assign 
+%type <id>  assign 
 
-
-/* precedence  and associativity defintions*/
+/* Precedence  and associativity defintions */
 %left '+' '-'
 %left '*'
 
 %%
-stmt : LET assignlist IN exp {printf("Expression result = %d\n", $4);}
-	 | LET error IN exp {$$ = $4; printf("Expression result = %d\n", $4);}
+stmt : LET assignlist IN exp { printf("Expression result = %d\n", $4); }
+	 | LET error IN exp 	 { $$ = $4; printf("Expression result = %d\n", $4); }
 	 ;
 
 assignlist : assign
@@ -50,19 +49,19 @@ assignlist : assign
 		   | assign error AND assignlist
 		   ;
 
-assign  : ID '=' exp {$$ = $1; updateSymTable($1,$3);}
-		| ID error {$$ = $1;}
+assign  : ID '=' exp { $$ = $1; updateSymTable($1,$3); }
+		| ID error   { $$ = $1; }
 		;
 
-exp : term		{ $$ = $1;} 
-	| exp '+' exp 	{ $$ = $1 + $3;}
-	| exp '-' exp 	{ $$ = $1 - $3;}
-	| exp '*' exp 	{ $$ = $1 * $3;}
-	| '(' exp ')'	{ $$ = $2;}
+exp : term		    { $$ = $1; } 
+	| exp '+' exp 	{ $$ = $1 + $3; }
+	| exp '-' exp 	{ $$ = $1 - $3; }
+	| exp '*' exp 	{ $$ = $1 * $3; }
+	| '(' exp ')'	{ $$ = $2; }
 	;
 
-term : NUMBER	{$$ = $1;}
-	 | ID  		{$$ = symbolVal($1);}
+term : NUMBER	{ $$ = $1; }
+	 | ID  		{ $$ = symbolVal($1); }
 %%
 
 int computeSymbolIndex(char token){
@@ -109,7 +108,7 @@ int main (int argc, char *argv[]) {
 // Error handling function
 int yyerror(const char *s) {
 	++nErrors;
-	fprintf(stderr, "Error %d (line %d, characters %d-%d):\n %s\n\n",nErrors,yylineno, yylloc.first_column, yylloc.last_column,s);
+	fprintf(stderr, "\nError %d (line %d, characters %d-%d):\n %s\n", nErrors, yylloc.first_line, yylloc.first_column, yylloc.last_column, s);
 	
 	return 0;
 }

@@ -466,9 +466,9 @@ char *yytext;
 	#include "y.tab.h"
 
 	extern int yyerror(const char *s);
-	//extern void yyerror(YYLTYPE *loc, char const *msg);
+	
 	int pos = 1;
-	char str[100];
+	int line = 1;
 	void calcTokenLocation();
 	void printError();
 #line 475 "lex.yy.c"
@@ -741,48 +741,48 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 18 "lex_template.lex"
-{calcTokenLocation(); return LET;}
+{ calcTokenLocation(); return LET; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 19 "lex_template.lex"
-{calcTokenLocation(); return AND;}
+{ calcTokenLocation(); return AND; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 20 "lex_template.lex"
-{calcTokenLocation(); return IN;}
+{ calcTokenLocation(); return IN; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 21 "lex_template.lex"
-{calcTokenLocation(); yylval.num = atoi(yytext); return NUMBER;}	
+{ calcTokenLocation(); yylval.num = atoi(yytext); return NUMBER; }	
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 22 "lex_template.lex"
-{calcTokenLocation(); yylval.id = yytext[0]; return ID;}
+{ calcTokenLocation(); yylval.id = yytext[0]; return ID; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 23 "lex_template.lex"
-{++pos;}
+{ ++pos; }
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
 #line 24 "lex_template.lex"
-{pos=0;}
+{ pos=1; ++line; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 25 "lex_template.lex"
-{calcTokenLocation(); return yytext[0];}
+{ calcTokenLocation(); return yytext[0]; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 26 "lex_template.lex"
-{calcTokenLocation(); printError();}
+{ calcTokenLocation(); printError(); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
@@ -1791,6 +1791,7 @@ void yyfree (void * ptr )
 
 
 void calcTokenLocation(){
+	yylloc.first_line = yylloc.last_line = line;
 	yylloc.first_column=pos;
 	pos+=yyleng;
 	yylloc.last_column=pos-1;
@@ -1800,6 +1801,7 @@ void printError(){
 	char msg[] = "lexical error, unrecognized input string `%s`";
 	char lenMsg = strlen(msg);
 	char str[lenMsg+yyleng];
-	sprintf(str,"lexical error, unrecognized input string `%s`",yytext);
+	
+	sprintf(str,"lexical error, unrecognized input string `%s`", yytext);
 	yyerror(str);
 }
