@@ -1,4 +1,9 @@
 %{
+	/*
+	Author: Tony Malzhacker (1746803)
+	Solution to Question 6.1 and 6.2
+	*/
+	
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h> 
