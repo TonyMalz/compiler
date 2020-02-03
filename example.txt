@@ -1,1 +1,1 @@
-let a=2 and b=2 and c = a+b in c
+let A=1 and B=2 and B=1 in A+B

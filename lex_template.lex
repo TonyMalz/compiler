@@ -15,15 +15,15 @@
 %option noyywrap
 
 %%
+[ \t]       { ++pos; }
+\n          { pos=1; ++line; }
 "let"		{ calcTokenLocation(); return LET; }
 "and"		{ calcTokenLocation(); return AND; }
 "in"		{ calcTokenLocation(); return IN; }
-[0-9]*[a-zA-Z]+[0-9]+	{ calcTokenLocation(); printError(); }
+[-+=*()]	{ calcTokenLocation(); return yytext[0]; }
+[a-zA-Z]+[^ =\ta-zA-Z]+/[ =\t]  { calcTokenLocation(); printError(); }
 [0-9]+		{ calcTokenLocation(); yylval.num = atoi(yytext); return NUMBER; }	
 [a-zA-Z]+ 	{ calcTokenLocation(); yylval.id = malloc(yyleng); strcpy(yylval.id, yytext); return ID; }
-[ \t]	    { ++pos; }
-\n          { pos=1; ++line; }
-[-+=*()]	{ calcTokenLocation(); return yytext[0]; }
 .			{ calcTokenLocation(); printError(); }
 %%
 
