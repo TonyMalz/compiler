@@ -63,7 +63,7 @@
 %type <num> stmt exp term id_exp
 %type <id>  assign 
 
-/* Precedence  and associativity defintions */
+/* Precedence and associativity definitions */
 %left '+' '-'
 %left '*'
 

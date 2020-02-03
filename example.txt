@@ -1,1 +1,1 @@
-let A=1 and B=2 and B=1 in A+B
+let A=1 and B=2 and C=2 in (A+B)*C+((C))

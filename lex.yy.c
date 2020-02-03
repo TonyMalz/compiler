@@ -467,6 +467,11 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "lex_template.lex"
 #line 2 "lex_template.lex"
+	/*
+	Author: Tony Malzhacker (1746803)
+	Solution to Question 6.1 and 6.2
+	*/
+	
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h> 
@@ -478,7 +483,7 @@ char *yytext;
 	int line = 1;
 	void calcTokenLocation();
 	void printError();
-#line 482 "lex.yy.c"
+#line 487 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -660,9 +665,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 17 "lex_template.lex"
+#line 22 "lex_template.lex"
 
-#line 666 "lex.yy.c"
+#line 671 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -747,33 +752,33 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 18 "lex_template.lex"
+#line 23 "lex_template.lex"
 { ++pos; }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 19 "lex_template.lex"
+#line 24 "lex_template.lex"
 { pos=1; ++line; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 20 "lex_template.lex"
+#line 25 "lex_template.lex"
 { calcTokenLocation(); return LET; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 21 "lex_template.lex"
+#line 26 "lex_template.lex"
 { calcTokenLocation(); return AND; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 22 "lex_template.lex"
+#line 27 "lex_template.lex"
 { calcTokenLocation(); return IN; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 23 "lex_template.lex"
+#line 28 "lex_template.lex"
 { calcTokenLocation(); return yytext[0]; }
 	YY_BREAK
 case 7:
@@ -782,30 +787,30 @@ case 7:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 24 "lex_template.lex"
+#line 29 "lex_template.lex"
 { calcTokenLocation(); printError(); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 25 "lex_template.lex"
+#line 30 "lex_template.lex"
 { calcTokenLocation(); yylval.num = atoi(yytext); return NUMBER; }	
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 26 "lex_template.lex"
+#line 31 "lex_template.lex"
 { calcTokenLocation(); yylval.id = malloc(yyleng); strcpy(yylval.id, yytext); return ID; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 27 "lex_template.lex"
+#line 32 "lex_template.lex"
 { calcTokenLocation(); printError(); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 28 "lex_template.lex"
+#line 33 "lex_template.lex"
 ECHO;
 	YY_BREAK
-#line 809 "lex.yy.c"
+#line 814 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1802,7 +1807,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 28 "lex_template.lex"
+#line 33 "lex_template.lex"
 
 
 
